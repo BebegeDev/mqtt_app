@@ -43,15 +43,27 @@ class ContactEmulators:
         return retval
 
 
+    @staticmethod
+    def close_socket(supply_socket):
+        supply_socket.shutdown(socket.SHUT_RDWR)
+        supply_socket.close()
+        print("closed socket ", supply_socket)
+
     def __connect_sockets(self, socket_params_list, timeout_seconds):
         for params in socket_params_list:
             print(f"Подключение к имитатору: {params}")
             ip, port = params
             try:
-                supplySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                supplySocket.connect((ip, port))
-                supplySocket.settimeout(timeout_seconds)
-                self.sockets.append(supplySocket)
+                self.supplySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.supplySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                try:
+                    self.supplySocket.connect((ip, port))
+                    self.supplySocket.settimeout(timeout_seconds)
+                    self.sockets.append(self.supplySocket)
+                except socket.error:
+                    print("Ошибка: ", socket.error)
+                    self.supplySocket.close()
+
                 print(f"Успешное подключение к {params}")
                 print(f"------------------------------------------------------------------")
             except ConnectionRefusedError:
@@ -75,7 +87,7 @@ class ContactEmulators:
             self.config.read(project_root_path)
         elif platform == 'linux' or platform == 'linux2':
             current_script_path = os.path.abspath(__file__)
-            project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "/utils/setting.ini"
+            project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\setting.ini"
             self.config.read(project_root_path)
         ip_1 = self.config["EM"]["IP_1"]
         ip_2 = self.config["EM"]["IP_2"]
