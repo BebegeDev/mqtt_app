@@ -87,7 +87,7 @@ class ContactEmulators:
             self.config.read(project_root_path)
         elif platform == 'linux' or platform == 'linux2':
             current_script_path = os.path.abspath(__file__)
-            project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\setting.ini"
+            project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "/utils/setting.ini"
             self.config.read(project_root_path)
         ip_1 = self.config["EM"]["IP_1"]
         ip_2 = self.config["EM"]["IP_2"]
