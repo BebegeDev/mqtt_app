@@ -2,15 +2,15 @@ import configparser
 import os
 import socket
 import re
+from sys import platform
 
 
 class ContactEmulators:
 
     def __init__(self):
+        self.config = configparser.ConfigParser()
         self.supplySockets_1 = None
         self.supplySockets_2 = None
-        current_script_path = os.path.abspath(__file__)
-        self.project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\setting.ini"
         self.sockets = []
         self.validSrcList = ["front", "web", "seq", "eth", "slot1", "slot2", "slot3", "slot4", "loc", "rem"]
         self.command_list = ["MEAS:VOL?", "MEAS:CUR?", "MEAS:POW?"]
@@ -69,8 +69,14 @@ class ContactEmulators:
 
 
     def connection_sim(self):
-        self.config = configparser.ConfigParser()
-        self.config.read(self.project_root_path)
+        if platform == 'win32' or platform == 'win64':
+            current_script_path = os.path.abspath(__file__)
+            project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\setting.ini"
+            self.config.read(project_root_path)
+        elif platform == 'linux' or platform == 'linux2':
+            current_script_path = os.path.abspath(__file__)
+            project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "/utils/setting.ini"
+            self.config.read(project_root_path)
         ip_1 = self.config["EM"]["IP_1"]
         ip_2 = self.config["EM"]["IP_2"]
         port_1 = int(self.config["EM"]["PORT_1"])
