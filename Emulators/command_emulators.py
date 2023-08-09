@@ -128,26 +128,40 @@ class CommandEmulators:
 
     def get_data_emulators(self, mqttc):
         if self.supplySocket_1 != "0":
-            result = self.em.send_and_receive_command("MEAS:VOL?\nMEAS:CUR?", self.supplySocket_1)
-            power = float(result[0]) * float(result[1])
-            print("Имитатор 1:")
-            print("-------Напряжение: ", result[0])
-            print("-------Ток: ", result[1])
-            print("-------Напряжение: ", power)
-            mqttc.publish('mpei/Emulator1/Volt', payload=json.dumps({"value": result[0]}))
-            mqttc.publish('mpei/Emulator1/Current', payload=json.dumps({"value": result[1]}))
-            mqttc.publish('mpei/Emulator1/Power', payload=json.dumps({"value": power}))
+            try:
+                result = self.em.send_and_receive_command("MEAS:VOL?\nMEAS:CUR?", self.supplySocket_1)
+                power = float(result[0]) * float(result[1])
+                print("Имитатор 1:")
+                print("-------Напряжение: ", result[0])
+                print("-------Ток: ", result[1])
+                print("-------Напряжение: ", power)
+                mqttc.publish('mpei/Emulator1/Volt', payload=json.dumps({"value": result[0]}))
+                mqttc.publish('mpei/Emulator1/Current', payload=json.dumps({"value": result[1]}))
+                mqttc.publish('mpei/Emulator1/Power', payload=json.dumps({"value": power}))
+            except TypeError:
+                print(f"Выходные параметры {self.supplySocket_1} являются типа None")
+        else:
+            mqttc.publish('mpei/Emulator1/Volt', payload=json.dumps({"value": 0}))
+            mqttc.publish('mpei/Emulator1/Current', payload=json.dumps({"value": 0}))
+            mqttc.publish('mpei/Emulator1/Power', payload=json.dumps({"value": 0}))
 
         if self.supplySocket_2 != "0":
-            result = self.em.send_and_receive_command("MEAS:VOL?\nMEAS:CUR?", self.supplySocket_2)
-            power = float(result[0]) * float(result[1])
-            print("Имитатор 2:")
-            print("-------Напряжение: ", result[0])
-            print("-------Ток: ", result[1])
-            print("-------Напряжение: ", power)
-            mqttc.publish('mpei/Emulator2/Volt', payload=json.dumps({"value": result[0]}))
-            mqttc.publish('mpei/Emulator2/Current', payload=json.dumps({"value": result[1]}))
-            mqttc.publish('mpei/Emulator2/Power', payload=json.dumps({"value": power}))
+            try:
+                result = self.em.send_and_receive_command("MEAS:VOL?\nMEAS:CUR?", self.supplySocket_2)
+                power = float(result[0]) * float(result[1])
+                print("Имитатор 2:")
+                print("-------Напряжение: ", result[0])
+                print("-------Ток: ", result[1])
+                print("-------Напряжение: ", power)
+                mqttc.publish('mpei/Emulator2/Volt', payload=json.dumps({"value": result[0]}))
+                mqttc.publish('mpei/Emulator2/Current', payload=json.dumps({"value": result[1]}))
+                mqttc.publish('mpei/Emulator2/Power', payload=json.dumps({"value": power}))
+            except TypeError:
+                print(f"Выходные параметры {self.supplySocket_2} являются типа None")
+        else:
+            mqttc.publish('mpei/Emulator2/Volt', payload=json.dumps({"value": 0}))
+            mqttc.publish('mpei/Emulator2/Current', payload=json.dumps({"value": 0}))
+            mqttc.publish('mpei/Emulator2/Power', payload=json.dumps({"value": 0}))
 
 
 

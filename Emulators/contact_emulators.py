@@ -9,8 +9,6 @@ class ContactEmulators:
 
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.supplySockets_1 = None
-        self.supplySockets_2 = None
         self.sockets = []
         self.validSrcList = ["front", "web", "seq", "eth", "slot1", "slot2", "slot3", "slot4", "loc", "rem"]
         self.command_list = ["MEAS:VOL?", "MEAS:CUR?", "MEAS:POW?"]
@@ -45,29 +43,25 @@ class ContactEmulators:
 
     @staticmethod
     def close_socket(supply_socket):
+        print("closed socket ", supply_socket)
         supply_socket.shutdown(socket.SHUT_RDWR)
         supply_socket.close()
-        print("closed socket ", supply_socket)
 
     def __connect_sockets(self, socket_params_list, timeout_seconds):
         for params in socket_params_list:
             print(f"Подключение к имитатору: {params}")
             ip, port = params
             try:
-                self.supplySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.supplySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                try:
-                    self.supplySocket.connect((ip, port))
-                    self.supplySocket.settimeout(timeout_seconds)
-                    self.sockets.append(self.supplySocket)
-                except socket.error:
-                    print("Ошибка: ", socket.error)
-                    self.supplySocket.close()
+                supplySocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                supplySocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+                supplySocket.connect((ip, port))
+                supplySocket.settimeout(timeout_seconds)
+                self.sockets.append(supplySocket)
 
                 print(f"Успешное подключение к {params}")
                 print(f"------------------------------------------------------------------")
-            except ConnectionRefusedError:
-                print(f"Ошибка при подключении к {params}")
+            except (ConnectionRefusedError, TimeoutError) as e:
+                print(f"Ошибка {e} при подключении к {params}")
                 print(f"------------------------------------------------------------------")
                 self.sockets.append('0')
         return self.sockets
@@ -77,8 +71,10 @@ class ContactEmulators:
         msg = msg + "\n"
         supplySocket.sendall(msg.encode("UTF-8"))
         buffer_size = self.config["EM"]["BUFFER_SIZE"]
-        return re.findall(r'\d+\.\d+', supplySocket.recv(int(buffer_size)).decode())
-
+        try:
+            return re.findall(r'\d+\.\d+', supplySocket.recv(int(buffer_size)).decode())
+        except TimeoutError as e:
+            print(e)
 
     def connection_sim(self):
         if platform == 'win32' or platform == 'win64':
@@ -91,8 +87,8 @@ class ContactEmulators:
             self.config.read(project_root_path)
         ip_1 = self.config["EM"]["IP_1"]
         ip_2 = self.config["EM"]["IP_2"]
-        port_1 = int(self.config["EM"]["PORT_1"])
-        port_2 = int(self.config["EM"]["PORT_1"])
+        port_1 = int(self.config["EM"]["PORT"])
+        port_2 = int(self.config["EM"]["PORT"])
         timeoout = int(self.config["EM"]["TIMEOUT_SECONDS"])
         self.supplySockets_1, self.supplySockets_2 = self.__connect_sockets(
             [
