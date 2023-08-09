@@ -1,0 +1,11 @@
+{
+  "PV_battery_voltage": "N/d436391ea13a/system/0/Dc/Battery/Voltage",
+  "PV_battery_power": "N/d436391ea13a/system/0/Dc/Battery/Power",
+  "PV_battery_current": "N/d436391ea13a/system/0/Dc/Battery/Current",
+  "PV_soc": "N/d436391ea13a/system/0/Dc/Battery/Soc",
+  "PV_ac_consumption": "N/d436391ea13asystem/0/Ac/Consumption/L1/Power",
+  "PV_power": "N/d436391ea13a/system/0/Dc/Pv/Power",
+  "PV_generator": "N/d436391ea13a/system/0/Ac/Genset/L1/Power",
+  "Power Generated Today": "N/d436391ea13a/solarcharger/256/History/Daily/0/Yield",
+  "Power Generated Total": "N/d436391ea13a/solarcharger/256/Yield/System"
+}
