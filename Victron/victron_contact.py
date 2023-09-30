@@ -12,8 +12,8 @@ class VictronCommand:
         self.dict_msg = {}
         self.mqttc = mqttc
 
-    def survey_victron(self, mqttc):
-        mqttc.publish('R/d436391ea13a/keepalive/', 'empty')
+    def survey_victron(self):
+        self.mqttc.publish('R/d436391ea13a/keepalive/', 'empty')
 
     def get_data_victron(self, client, userdata, msg):
         if msg.payload:
@@ -32,3 +32,13 @@ class VictronCommand:
         with open(project_root_path, 'r') as json_file:
             topics = json.load(json_file)
         return topics
+
+    def callback_topics(self, topic):
+        for key, item in topic.items():
+            self.mqttc.message_callback_add(item, self.get_data_victron)
+
+    def publish_topic(self, topics_client):
+        for key, item in self.dict_msg.items():
+            self.mqttc.publish(
+                topics_client[key], item
+            )
