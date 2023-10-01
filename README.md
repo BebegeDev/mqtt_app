@@ -34,14 +34,14 @@ pip install -r requirements.txt
 # Настройка работы программы #
 В файле `main.py` находятся основные вызовы. Для дальнейшей настройки вам следует отредактировать код под ваше количество оборудования, рассмотрите пример ниже:
 
-Если у вас есть SM3300, вы можете оставить следующие строчки кода 
+Если у вас есть в количестве 2 штк. SM3300, вы можете оставить следующие строчки кода 
 ```
     emulators_contact = Emulators.emulators_contact.ContactEmulators(mqttc)
     emulators_command = Emulators.emulators_command.CommandEmulators(mqttc, emulators_contact)
     emulators_contact.get_data_emulators()
     Emulators.emulators_contact.ContactEmulators.close_socket(emulators_contact.supplySocket_1)
+    Emulators.emulators_contact.ContactEmulators.close_socket(emulators_contact.supplySocket_2)
 ```
-В данном репозитории рассматривается SM3300 в количестве 2 штк.
 Если выше количество отличается, отредактируйте файлы в папке `Emulators` добавьте или убавьте количество соокетов и тд. под ваше кол-во SM3300.
 Аналогично с BMV-702 отредактируйте файлы в папке`Victron` под ваши нужды.
 
