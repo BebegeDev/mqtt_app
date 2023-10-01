@@ -27,7 +27,7 @@ import os
 #     "Power Generated Total": pref+"Power Generated Total"
 # }
 
-pref = "mpei/DGU/"
+# pref = "mpei/DGU/"
 
 
 # def diesel(d):
