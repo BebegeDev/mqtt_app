@@ -30,22 +30,22 @@ import os
 pref = "mpei/DGU/"
 
 
-def diesel(d):
-    return {
-        "power": [f'{pref}{d}/power/set_point', f'{pref}{d}/power/rated_power', f'{pref}{d}/power'
-                                                                                f'/current_generator_power'],
-        "job_status": [f"{pref}{d}/job_status"],
-        "autorun": [f"{pref}{d}/autorun"],
-        "voltage/frequency": [f"{pref}{d}/voltage_frequency"]
-    }
-
-
-topics = []
-for i in range(1, 7):
-    topics.append(diesel(i))
-current_script_path = os.path.abspath(__file__)
-project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\data_topics_diesel.json"
-
-with open(project_root_path, "w") as json_file:
-    json.dump(topics, json_file)
+# def diesel(d):
+#     return {
+#         "power": [f'{pref}{d}/power/set_point', f'{pref}{d}/power/rated_power', f'{pref}{d}/power'
+#                                                                                 f'/current_generator_power'],
+#         "job_status": [f"{pref}{d}/job_status"],
+#         "autorun": [f"{pref}{d}/autorun"],
+#         "voltage/frequency": [f"{pref}{d}/voltage_frequency"]
+#     }
+#
+#
+# topics = []
+# for i in range(1, 7):
+#     topics.append(diesel(i))
+# current_script_path = os.path.abspath(__file__)
+# project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\data_topics_diesel.json"
+#
+# with open(project_root_path, "w") as json_file:
+#     json.dump(topics, json_file)
 
