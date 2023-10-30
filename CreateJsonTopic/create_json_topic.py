@@ -13,6 +13,11 @@ import os
 #     "Power Generated Today": pref+"/solarcharger/256/History/Daily/0/Yield",
 #     "Power Generated Total": pref+"/solarcharger/256/Yield/System"
 # }
+# current_script_path = os.path.abspath(__file__)
+# project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\data_topics_client.json"
+#
+# with open(project_root_path, "w") as json_file:
+#     json.dump(topics, json_file)
 
 # pref = "mpei/Victron/"
 # topics = {
@@ -26,6 +31,11 @@ import os
 #     "Power Generated Today": pref+"Power Generated Today",
 #     "Power Generated Total": pref+"Power Generated Total"
 # }
+# current_script_path = os.path.abspath(__file__)
+# project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\data_topics_client.json"
+#
+# with open(project_root_path, "w") as json_file:
+#     json.dump(topics, json_file)
 
 # pref = "mpei/DGU/"
 

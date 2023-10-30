@@ -18,7 +18,6 @@ class ContactEmulators:
         self.command_list = ["MEAS:VOL?", "MEAS:CUR?", "MEAS:POW?"]
         self.connection_sim()
 
-
     @staticmethod
     def send_command(msg, supplySocket):
         msg = msg + "\n"
@@ -29,11 +28,9 @@ class ContactEmulators:
         if src in self.validSrcList:
             self.send_command("SYST:REM:CV {0}".format(src), self.sockets[0])
             self.send_command("SYST:REM:CV {0}".format(src), self.sockets[1])
-
         else:
             retval = -1
         return retval
-
 
     def set_prog_source_i(self, src):
         retval = 0
@@ -43,7 +40,6 @@ class ContactEmulators:
         else:
             retval = -1
         return retval
-
 
     @staticmethod
     def close_socket(supply_socket):
@@ -69,7 +65,6 @@ class ContactEmulators:
                 print(f"------------------------------------------------------------------")
                 self.sockets.append('0')
         return self.sockets
-
 
     def send_and_receive_command(self, msg, supplySocket):
         msg = msg + "\n"
