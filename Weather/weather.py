@@ -50,15 +50,19 @@ class WeatherForecast:
     def __get_data(self):
         now = datetime.now()
         self.current_time = int(now.strftime("%H"))
-
+        
+        
     @staticmethod
-    def get_param_weather(hour, *param):
+    def get_param_weather(hour=1, *param):
         ob_json = utils.open_json.OpenJson()
         data_json = None
         if platform == 'win32' or platform == 'win64':
             data_json = ob_json.open_json('\\utils\\weather.json')
         elif platform == 'linux' or platform == 'linux2':
             data_json = ob_json.open_json('/utils/weather.json')
-        df = pd.json_normalize(data_json).iloc[hour].loc[list(param)]
+        if param:
+            df = pd.json_normalize(data_json).iloc[hour].loc[list(param)]
+        else:
+            df = pd.json_normalize(data_json).iloc[hour]
         print(df)
         return df
