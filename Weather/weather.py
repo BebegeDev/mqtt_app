@@ -50,7 +50,8 @@ class WeatherForecast:
     def __get_data(self):
         now = datetime.now()
         self.current_time = int(now.strftime("%H"))
-
+        
+        
     @staticmethod
     def get_param_weather(hour=1, *param):
         ob_json = utils.open_json.OpenJson()
