@@ -27,6 +27,7 @@ def main():
         topics_diesel = diesel.open_json("/utils/data_topics_diesel.json")
         diesel.publish_topic(topics_diesel)
     print('Прослушивание R/d436391ea13a/keepalive/')
+
     try:
         while True:
             time.sleep(5)
