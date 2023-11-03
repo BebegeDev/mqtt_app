@@ -1,4 +1,4 @@
-# РАЗРАБАТЫВАЕТСЯ И ПЛАНИРУЕТСЯ ИСПОЛЬЗОВАТЬСЯ СОВМЕСТО С app_calculations https://github.com/BebegeDev/app_calculations.git
+# РАЗРАБАТЫВАЕТСЯ И ПЛАНИРУЕТСЯ ИСПОЛЬЗОВАТЬСЯ СОВМЕСТНО С app_calculations https://github.com/BebegeDev/app_calculations.git
 # mqtt_app #
 Данный репозиторий содержит код, который выступает в роли шлюза, для связи оборудования и пользователя. В качестве прослойки выбран протокол mqtt. 
 Доступное оборудование на данный момент: SM3300, Victron BMV-702.
