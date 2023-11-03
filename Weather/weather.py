@@ -38,18 +38,19 @@ class WeatherForecast:
         response = requests.get(address, headers=self.__headers)
         if response.status_code == 200:
             try:
+                print(200)
                 json_data = response.json()
                 with open(self.__project_root_path, "w") as json_file:
-                    self.__get_data()
-                    json.dump(json_data[self.current_time:24+self.current_time], json_file)
+                    data = self.__get_data()
+                    json.dump(json_data[data:24+data], json_file)
             except ValueError:
                 print("Сервер вернул некорректный JSON")
         else:
             print(f"Запрос завершился с кодом ошибки {response.status_code}")
 
-    def __get_data(self):
-        now = datetime.now()
-        self.current_time = int(now.strftime("%H"))
+    @staticmethod
+    def __get_data():
+        return int(datetime.now().strftime("%H"))
         
         
     @staticmethod
@@ -64,5 +65,4 @@ class WeatherForecast:
             df = pd.json_normalize(data_json).iloc[hour].loc[list(param)]
         else:
             df = pd.json_normalize(data_json).iloc[hour]
-        print(df)
         return df

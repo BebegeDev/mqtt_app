@@ -1,49 +1,46 @@
-import time
-import mqtt.contact_mqtt
-import Emulators.emulators_command
-import Emulators.emulators_contact
-import Victron.victron_contact
-import Diesel.diesel_contact
-from sys import platform
+import asyncio
+from mqtt.contact_mqtt import connection
+from Diesel.diesel_command import DieselCommand
+from utils.create_file_and_path import Util
+from utils.publish import Publish
+from Emulators.emulators_contact import ContactEmulators
+from Emulators.emulators_command import CommandEmulators
+from Victron.victron_contact import VictronCommand
 
 
-def main():
-    mqttc = mqtt.contact_mqtt.connection()
-    time.sleep(1)
-    emulators_contact = Emulators.emulators_contact.ContactEmulators(mqttc)
-    emulators_command = Emulators.emulators_command.CommandEmulators(mqttc, emulators_contact)
-    victron = Victron.victron_contact.VictronCommand(mqttc)
-    diesel = Diesel.diesel_contact.DieselCommand(mqttc)
-    topics_victron = ''
-    topics_client = ''
-    topics_diesel = ''
-    if platform == 'win32' or platform == 'win64':
-        topics_victron = victron.open_json("\\utils\\data_topics_victron.json")
-        topics_client = victron.open_json("\\utils\\data_topics_client.json")
-        topics_diesel = diesel.open_json("\\utils\\data_topics_diesel.json")
-    elif platform == 'linux' or platform == 'linux2':
-        topics_victron = victron.open_json("/utils/data_topics_victron.json")
-        topics_client = victron.open_json("/utils/data_topics_client.json")
-        topics_diesel = diesel.open_json("/utils/data_topics_diesel.json")
-        diesel.publish_topic(topics_diesel)
-    print('Прослушивание R/d436391ea13a/keepalive/')
+async def process_data():
+    mqttc = connection()
+    data_path = Util()
+    publish = Publish(mqttc)
+    emulators_contact_one = ContactEmulators(mqttc, "EM_ONE")
+    emulators_contact_two = ContactEmulators(mqttc, "EM_TWO")
+    emulators_contact_one.connection_sim(data_path.get_data_path("setting.ini"))
+    emulators_contact_two.connection_sim(data_path.get_data_path("setting.ini"))
+    emulators_command = CommandEmulators(mqttc, emulators_contact_one)
+    emulators_command = CommandEmulators(mqttc, emulators_contact_two)
+    victron = VictronCommand(mqttc)
+    diesel = DieselCommand(mqttc)
+    topic_victron = data_path.open_json("data_topics_client.json")
+    tasks_callback = [victron.callback_topics(data_path.open_json("data_topics_victron.json"))]
 
+    await asyncio.gather(*tasks_callback)
     try:
         while True:
-            time.sleep(5)
             victron.survey_victron()
-            emulators_contact.get_data_emulators()
-            victron.callback_topics(topics_victron)
-            victron.publish_topic(topics_client)
-
+            victron.publish_topic(topic_victron)
+            emulators_contact_one.get_data_emulators()
+            emulators_contact_two.get_data_emulators()
+            publish.publish_data_emulators(emulators_contact_one)
+            publish.publish_data_emulators(emulators_contact_two)
+            await asyncio.sleep(1)
 
 
     except KeyboardInterrupt:
-        Emulators.emulators_contact.ContactEmulators.close_socket(emulators_contact.supplySocket_1)
-        Emulators.emulators_contact.ContactEmulators.close_socket(emulators_contact.supplySocket_2)
+        ContactEmulators.close_socket(emulators_contact_one.socket)
+        ContactEmulators.close_socket(emulators_contact_two.socket)
+
         print("Соединение закрыто по инициативе пользователя")
 
 
-
 if __name__ == '__main__':
-    main()
+    asyncio.run(process_data())
