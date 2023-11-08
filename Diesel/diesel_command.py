@@ -1,10 +1,7 @@
-from pymodbus.client.serial import ModbusSerialClient
-
 
 class DieselCommand:
     def __init__(self, client):
         self.client = client
-
 
     def command_read_holding_registers(self, address, count, slave):
         data = self.client.read_holding_registers(address=address, count=count, slave=slave)
