@@ -15,25 +15,25 @@ class EmCallback(InterfaceCallback):
         self.mqttc.message_callback_add(topic, self.get_data)
 
     def get_data(self, client, userdata, data):
-        try:
-            parsed_data = json.loads(data.payload.decode("utf-8", "ignore"))
-            self.validate_data(data)
-            if self.flag_get_data:
-                self.test(parsed_data)
-        except Exception as e:
-            print(f"Error {e}")
+
+        parsed_data = json.loads(data.payload.decode("utf-8", "ignore"))
+        self.validate_data(data)
+        if self.flag_get_data:
+            self.push_command(parsed_data)
+
 
     def validate_data(self, data):
         if data:
             self.flag_get_data = True
 
-    def test(self, msg):
+    def push_command(self, msg):
         key = list(msg.keys())[0]
+        value = list(msg.values())[0]
         dict_command = {
-            'test2': self.emulators_command_one.test2,
-            'on_off': self.emulators_command_one.on_off,
-            'set_voltage': self.emulators_command_one.set_voltage,
-            'set_current': self.emulators_command_one.set_current,
+            'test2': [self.emulators_command_one.test2, 1],
+            'on_off': [self.emulators_command_one.on_off, f"OUTPUT {value}"],
+            'set_voltage': [self.emulators_command_one.set_point_command, f"SOUR:VOLT {value}"],
+            'set_current': [self.emulators_command_one.set_point_command, f"SOUR:CUR {value}"]
         }
-        func = dict_command[key]
-        func(msg)
+        func, command = dict_command[key]
+        func(command)

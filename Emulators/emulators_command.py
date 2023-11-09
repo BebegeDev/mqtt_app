@@ -1,47 +1,27 @@
-from Emulators.emulators_logics_command import EmulatorsLogicsCommand
-
-
-
 class CommandEmulators:
 
     def __init__(self, em):
         self.em = em
-        self.flags = EmulatorsLogicsCommand()
 
-    def on_off(self, client, userdata, msg):
-        msg = msg.payload.decode()
-        if self.flags.logics_on_off(msg):
-            self.em.send_command("OUTPUT 1", self.em)
-        else:
-            self.em.send_command("OUTPUT 0", self.em)
+    def on_off(self, command):
+        print(f"Calling on_off with command: {command}")
+        self.em.send_command(command)
 
-    def set_voltage(self, client, userdata, msg):
+    def set_point_command(self, command):
+        print(f"Calling set_point_command with command: {command}")
         retval = 0
-        msg = msg.payload.decode()
         self.em.set_prog_source_i('eth')
         self.em.set_prog_source_v('eth')
-        if msg:
-            self.em.send_command(f"SOUR:VOLT {msg}", self.em)
+        if command:
+            self.em.send_command(command)
         else:
+            print("ERROR")
             retval = -1
         return retval
 
-    def set_current(self, client, userdata, msg):
-        retval = 0
-        msg = msg.payload.decode()
-        self.em.set_prog_source_i('eth')
-        self.em.set_prog_source_v('eth')
-        if msg:
-            self.em.send_command(f"SOUR:CUR {msg}", self.em)
-        else:
-            retval = -1
-        return retval
-
-    def test2(self, data):
-        print(data)
-
-
-
+    def test2(self, command):
+        print(f"Calling test2 with command: {command}")
+        print(command)
 
 
 
