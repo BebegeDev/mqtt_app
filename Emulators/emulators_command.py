@@ -1,11 +1,11 @@
 from Emulators.emulators_logics_command import EmulatorsLogicsCommand
 
 
+
 class CommandEmulators:
 
-    def __init__(self, mqttc, em):
+    def __init__(self, em):
         self.em = em
-        self.mqttc = mqttc
         self.flags = EmulatorsLogicsCommand()
 
     def on_off(self, client, userdata, msg):
@@ -14,7 +14,6 @@ class CommandEmulators:
             self.em.send_command("OUTPUT 1", self.em)
         else:
             self.em.send_command("OUTPUT 0", self.em)
-
 
     def set_voltage(self, client, userdata, msg):
         retval = 0
@@ -38,6 +37,8 @@ class CommandEmulators:
             retval = -1
         return retval
 
+    def test2(self, data):
+        print(data)
 
 
 

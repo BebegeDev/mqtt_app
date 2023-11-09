@@ -44,3 +44,5 @@ class Util:
         path = self.get_data_path("py_log.log")
         logging.basicConfig(level=logging.INFO, filename=path, filemode=mode,
                             format="%(asctime)s %(levelname)s %(message)s")
+
+
