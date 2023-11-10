@@ -36,6 +36,7 @@ class VictronCommand(InterfaceCallback):
             print("Error: ", e)
 
 
+
     async def callback_data(self, topic):
         for key, item in topic.items():
             self.mqttc.message_callback_add(item, self.get_data)
