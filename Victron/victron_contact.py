@@ -36,14 +36,6 @@ class VictronCommand(InterfaceCallback):
             print("Error: ", e)
 
 
-    @staticmethod
-    def open_json(path):
-        current_script_path = os.path.abspath(__file__)
-        project_root_path = os.path.dirname(os.path.dirname(current_script_path))+path
-        with open(project_root_path, 'r') as json_file:
-            topics = json.load(json_file)
-        return topics
-
 
     async def callback_data(self, topic):
         for key, item in topic.items():
@@ -59,4 +51,3 @@ class VictronCommand(InterfaceCallback):
         if data:
             self.flag_get_data = True
             return True
-
