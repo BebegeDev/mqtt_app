@@ -1,9 +1,5 @@
-import json
-import os
 from datetime import datetime
 import requests
-from sys import platform
-import utils.open_json
 import pandas as pd
 from utils.create_file_and_path import Util
 
@@ -14,11 +10,9 @@ class WeatherForecast:
         self.__params = None
         self.__headers = None
         self.set_param()
-        self.__path_json_save()
+        self.name_file = Util()
 
-    def __path_json_save(self):
-        current_script_path = os.path.abspath(__file__)
-        self.__project_root_path = os.path.dirname(os.path.dirname(current_script_path)) + "\\utils\\weather.json"
+
 
     def set_param(self, station='1', var_station='mpei', var_nwp_provider='icon'):
         self.__headers = {
@@ -41,9 +35,8 @@ class WeatherForecast:
             try:
                 print(200)
                 json_data = response.json()
-                with open(self.__project_root_path, "w") as json_file:
-                    data = self.__get_data()
-                    json.dump(json_data[data:24+data], json_file)
+                data = self.__get_data()
+                self.name_file.create_json("weather.json", json_data[data:24+data])
             except ValueError:
                 print("Сервер вернул некорректный JSON")
         else:
