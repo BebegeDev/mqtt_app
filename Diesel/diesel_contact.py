@@ -1,8 +1,10 @@
+
 from Interface.interface import InterfaceCallback
 from pymodbus.client.serial import ModbusSerialClient
 
 
 class Contact(InterfaceCallback):
+
 
     def __init__(self):
         self.client = ModbusSerialClient(method='rtu', port="/dev/ttyUSB0", baudrate=19200,
