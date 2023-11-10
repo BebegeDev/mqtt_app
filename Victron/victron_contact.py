@@ -44,6 +44,7 @@ class VictronCommand(InterfaceCallback):
             topics = json.load(json_file)
         return topics
 
+
     async def callback_data(self, topic):
         for key, item in topic.items():
             self.mqttc.message_callback_add(item, self.get_data)
@@ -58,3 +59,4 @@ class VictronCommand(InterfaceCallback):
         if data:
             self.flag_get_data = True
             return True
+

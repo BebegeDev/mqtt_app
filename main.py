@@ -8,18 +8,21 @@ from utils.publish import Publish
 from Emulators.emulators_contact import ContactEmulators
 from Emulators.emulators_command import CommandEmulators
 from Emulators.emulators_callback import EmCallback
+
 from Victron.victron_contact import VictronCommand
 
 
 async def process_data():
     mqttc = connection()
     time.sleep(1)
+
     data_path = Util()
     publish = Publish(mqttc)
     emulators_contact_one = ContactEmulators(mqttc, "EM_ONE")
     emulators_contact_two = ContactEmulators(mqttc, "EM_TWO")
     emulators_contact_one.connection_sim(data_path.get_data_path("setting.ini"))
     emulators_contact_two.connection_sim(data_path.get_data_path("setting.ini"))
+
     emulators_command_one = CommandEmulators(emulators_contact_one)
     emulators_command_two = CommandEmulators(emulators_contact_two)
     emulators_callback_one = EmCallback(mqttc, emulators_contact_one, emulators_command_one)
@@ -29,11 +32,12 @@ async def process_data():
     tasks_callback = [victron.callback_data(data_path.open_json("data_topics_victron.json")),
                       emulators_callback_one.callback_data()]
 
-
     await asyncio.gather(*tasks_callback)
     try:
         while True:
+
             await victron.survey_victron()
+
             victron.publish_topic(topic_victron)
             emulators_contact_one.get_data_emulators()
             emulators_contact_two.get_data_emulators()
