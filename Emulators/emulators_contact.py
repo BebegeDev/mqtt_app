@@ -19,15 +19,18 @@ class ContactEmulators:
         self.command_list = ["MEAS:VOL?", "MEAS:CUR?", "MEAS:POW?"]
         self.name_config = name_config
 
-    @staticmethod
-    def send_command(msg, supply_socket):
+
+
+    def send_command(self, msg):
         msg = msg + "\n"
-        supply_socket.sendall(msg.encode("UTF-8"))
+        self.socket.sendall(msg.encode("UTF-8"))
+
 
     def set_prog_source_v(self, src):
         retval = 0
         if src in self.validSrcList:
-            self.send_command("SYST:REM:CV {0}".format(src), self.socket)
+            self.send_command("SYST:REM:CV {0}".format(src))
+
         else:
             retval = -1
         return retval
@@ -35,7 +38,7 @@ class ContactEmulators:
     def set_prog_source_i(self, src):
         retval = 0
         if src.lower() in self.validSrcList:
-            self.send_command("SYST:REM:CC {0}".format(src), self.socket)
+            self.send_command("SYST:REM:CC {0}".format(src))
         else:
             retval = -1
         return retval

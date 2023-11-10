@@ -5,6 +5,7 @@ import requests
 from sys import platform
 import utils.open_json
 import pandas as pd
+from utils.create_file_and_path import Util
 
 
 class WeatherForecast:
@@ -55,12 +56,7 @@ class WeatherForecast:
         
     @staticmethod
     def get_param_weather(hour=1, *param):
-        ob_json = utils.open_json.OpenJson()
-        data_json = None
-        if platform == 'win32' or platform == 'win64':
-            data_json = ob_json.open_json('\\utils\\weather.json')
-        elif platform == 'linux' or platform == 'linux2':
-            data_json = ob_json.open_json('/utils/weather.json')
+        data_json = Util().open_json("weather.json")
         if param:
             df = pd.json_normalize(data_json).iloc[hour].loc[list(param)]
         else:
