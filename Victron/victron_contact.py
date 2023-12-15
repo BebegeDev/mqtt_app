@@ -1,8 +1,6 @@
-import asyncio
 from Interface.interface import InterfaceCallback
-import configparser
 import json
-import os
+
 
 
 class VictronCommand(InterfaceCallback):
@@ -16,9 +14,8 @@ class VictronCommand(InterfaceCallback):
         self.dict_msg = {}
         self.mqttc = mqttc
 
-    async def survey_victron(self):
+    def survey_victron(self):
         self.mqttc.publish('R/d436391ea13a/keepalive/', 'empty')
-        await asyncio.sleep(60)
 
     def get_data(self, client, userdata, data):
         try:

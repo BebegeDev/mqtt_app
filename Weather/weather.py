@@ -12,8 +12,6 @@ class WeatherForecast:
         self.set_param()
         self.name_file = Util()
 
-
-
     def set_param(self, station='1', var_station='mpei', var_nwp_provider='icon'):
         self.__headers = {
             'accept': 'application/json',

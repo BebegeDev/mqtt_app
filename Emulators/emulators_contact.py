@@ -1,18 +1,14 @@
 import configparser
-import json
-import os
 import socket
 import re
-from sys import platform
 
 
 class ContactEmulators:
 
-    def __init__(self, mqttc, name_config):
+    def __init__(self, name_config):
         self.result = None
         self.power = None
         self.socket = None
-        self.mqttc = mqttc
         self.config = configparser.ConfigParser()
         self.sockets = []
         self.validSrcList = ["front", "web", "seq", "eth", "slot1", "slot2", "slot3", "slot4", "loc", "rem"]
@@ -57,7 +53,7 @@ class ContactEmulators:
             supply_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             supply_socket.connect((ip, port))
             supply_socket.settimeout(timeout_seconds)
-            print(f"Успешное подключение к {supply_socket}")
+            print(f"Успешное подключение к {data_socket}")
             print(f"------------------------------------------------------------------")
             self.sockets_flag = True
             return supply_socket
@@ -87,7 +83,7 @@ class ContactEmulators:
         if self.sockets_flag:
             try:
                 self.result = self.send_and_receive_command("MEAS:VOL?\nMEAS:CUR?", self.socket)
-                self.power = float(self.result[0]) * float(self.result[1])
+                self.power = f"{float(self.result[0]) * float(self.result[1])}"
             except TypeError:
                 print(f"Выходные параметры {self.socket} являются типа None")
 

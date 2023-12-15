@@ -11,7 +11,9 @@ class EmCallback(InterfaceCallback):
         self.mqttc = mqttc
         self.emulators_command_one = emulators_command_one
 
-    async def callback_data(self, topic="mpei/Operator/Command"):
+
+
+    async def callback_data(self, topic="mpei/command_operator/em"):
         self.mqttc.message_callback_add(topic, self.get_data)
 
     def get_data(self, client, userdata, data):
@@ -29,6 +31,8 @@ class EmCallback(InterfaceCallback):
     def push_command(self, msg):
         key = list(msg.keys())[0]
         value = list(msg.values())[0]
+        print(key)
+        print(value)
         dict_command = {
             'test2': [self.emulators_command_one.test2, 1],
             'on_off': [self.emulators_command_one.on_off, f"OUTPUT {value}"],
@@ -37,3 +41,5 @@ class EmCallback(InterfaceCallback):
         }
         func, command = dict_command[key]
         func(command)
+
+
