@@ -16,6 +16,14 @@ class Util:
         elif platform == 'linux' or platform == 'linux2':
             return os.path.dirname(os.path.dirname(current_script_path)) + f"/utils/{name_file}"
 
+    @staticmethod
+    def get_data_path_log(name_file):
+        current_script_path = os.path.abspath(__file__)
+        if platform == 'win32' or platform == 'win64':
+            return os.path.dirname(os.path.dirname(current_script_path)) + f"\\log\\{name_file}"
+        elif platform == 'linux' or platform == 'linux2':
+            return os.path.dirname(os.path.dirname(current_script_path)) + f"/log/{name_file}"
+
     def open_json(self, name_file):
         try:
             path = self.get_data_path(name_file)
@@ -42,9 +50,10 @@ class Util:
             writer.writerow(data_to_add)
 
     def create_log(self, mode):
-        path = self.get_data_path("py_log.log")
+        path = self.get_data_path_log("py_log_mqtt.log")
         logging.basicConfig(level=logging.INFO, filename=path, filemode=mode,
                             format="%(asctime)s %(levelname)s %(message)s")
+
 
     def config_pars(self, name):
         config = configparser.ConfigParser()

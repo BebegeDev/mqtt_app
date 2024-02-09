@@ -5,13 +5,10 @@ from Interface.interface import InterfaceCallback
 
 class EmCallback(InterfaceCallback):
 
-    def __init__(self, mqttc, em, emulators_command_one):
+    def __init__(self, mqttc, em):
         self.flag_get_data = None
         self.em = em
         self.mqttc = mqttc
-        self.emulators_command_one = emulators_command_one
-
-
 
     async def callback_data(self, topic="mpei/command_operator/em"):
         self.mqttc.message_callback_add(topic, self.get_data)
@@ -23,7 +20,6 @@ class EmCallback(InterfaceCallback):
         if self.flag_get_data:
             self.push_command(parsed_data)
 
-
     def validate_data(self, data):
         if data:
             self.flag_get_data = True
@@ -34,12 +30,10 @@ class EmCallback(InterfaceCallback):
         print(key)
         print(value)
         dict_command = {
-            'test2': [self.emulators_command_one.test2, 1],
-            'on_off': [self.emulators_command_one.on_off, f"OUTPUT {value}"],
-            'set_voltage': [self.emulators_command_one.set_point_command, f"SOUR:VOLT {value}"],
-            'set_current': [self.emulators_command_one.set_point_command, f"SOUR:CUR {value}"]
+            'test2': [self.em.test2, 1],
+            'on_off': [self.em.on_off, f"OUTPUT {value}"],
+            'set_voltage': [self.em.set_point_command, f"SOUR:VOLT {value}"],
+            'set_current': [self.em.set_point_command, f"SOUR:CUR {value}"]
         }
         func, command = dict_command[key]
         func(command)
-
-

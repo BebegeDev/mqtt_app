@@ -6,7 +6,6 @@ class Publish:
     def __init__(self, mqttc):
         self.mqttc = mqttc
 
-
     def publish_data_emulators(self, emulator):
         if emulator.sockets_flag:
             try:
