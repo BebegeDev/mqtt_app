@@ -54,7 +54,6 @@ class Util:
         logging.basicConfig(level=logging.INFO, filename=path, filemode=mode,
                             format="%(asctime)s %(levelname)s %(message)s")
 
-
     def config_pars(self, name):
         config = configparser.ConfigParser()
         project_root_path = self.get_data_path(name)

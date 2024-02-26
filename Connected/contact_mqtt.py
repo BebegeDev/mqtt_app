@@ -2,6 +2,10 @@ import paho.mqtt.client as mqtt
 from utils.create_file_and_path import Util
 
 
+async def callback_data(self, topic="mpei/command_operator/em"):
+    self.mqttc.message_callback_add(topic, self.get_data)
+
+
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("Подключение к MQTT прошло успешно")

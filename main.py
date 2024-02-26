@@ -1,6 +1,6 @@
 import asyncio
 from Connected.contact_mqtt import connection
-from Connected.connection_db import DatabaseConnectionThread
+# from Connected.connection_db import DatabaseConnectionThread
 from Diesel.diesel_command import DieselCommand
 from Diesel.diesel_contact import DieselContact
 from utils.create_file_and_path import Util
@@ -16,7 +16,7 @@ async def process_data():
     # подключение к mqtt
     mqttc = connection()
     # подключение к ДБ
-    main_db = DatabaseConnectionThread().connections_db()
+    # main_db = DatabaseConnectionThread().connections_db()
     # Экземпляр класса Util
     data_path = Util()
     # экземпляр класса Publish
