@@ -19,10 +19,6 @@ class CommandEmulators:
             retval = -1
         return retval
 
-    def test2(self, command):
-        print(f"Calling test2 with command: {command}")
-        print(command)
-
 
 
 

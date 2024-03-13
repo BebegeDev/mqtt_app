@@ -5,16 +5,16 @@ from Interface.interface import InterfaceCallback
 
 class EmCallback(InterfaceCallback):
 
-    def __init__(self, mqttc, em):
+    def __init__(self, mqttc, em, em_command):
         self.flag_get_data = None
         self.em = em
         self.mqttc = mqttc
+        self.em_command = em_command
 
     async def callback_data(self, topic="mpei/command_operator/em"):
         self.mqttc.message_callback_add(topic, self.get_data)
 
     def get_data(self, client, userdata, data):
-
         parsed_data = json.loads(data.payload.decode("utf-8", "ignore"))
         self.validate_data(data)
         if self.flag_get_data:
@@ -30,10 +30,9 @@ class EmCallback(InterfaceCallback):
         print(key)
         print(value)
         dict_command = {
-            'test2': [self.em.test2, 1],
-            'on_off': [self.em.on_off, f"OUTPUT {value}"],
-            'set_voltage': [self.em.set_point_command, f"SOUR:VOLT {value}"],
-            'set_current': [self.em.set_point_command, f"SOUR:CUR {value}"]
+            'on_off': [self.em_command.on_off, f"OUTPUT {value}"],
+            'set_voltage': [self.em_command.set_point_command, f"SOUR:VOLT {value}"],
+            'set_current': [self.em_command.set_point_command, f"SOUR:CUR {value}"]
         }
         func, command = dict_command[key]
         func(command)
