@@ -5,9 +5,10 @@ interface = InterfaceCallback
 
 class Command(InterfaceCallback):
 
-    def __init__(self, mqttc):
+    def __init__(self, mqttc, connect):
         self.parsed_data = None
         self.mqttc = mqttc
+        self.connect = connect
 
     def callback_data(self, topic='mpei/command/on_off'):
         self.mqttc.message_callback_add(topic, self.get_data)
@@ -25,9 +26,16 @@ class Command(InterfaceCallback):
     def validate_data(self, data):
         pass
 
-    def check_connections(self, connect):
-        cursor = connect.cursor()
-        cursor.execute("SELECT * FROM control_signal WHERE start_stop_id ='1'")
-        start_stop = cursor.fetchall()[0]["start_stop"]
+    def check_connections(self):
+        cursor = self.connect.cursor()
+        cursor.execute("SELECT * FROM control_signal WHERE id ='1'")
+        start_stop = cursor.fetchone()["start_stop"]
         return start_stop
+
+    def get_param_em(self):
+        cursor = self.connect.cursor()
+        cursor.execute("SELECT * FROM parameters_of_pv_modules WHERE id ='1'")
+        param_em = list(cursor.fetchall()[0].values())[:-1]
+        return param_em
+
 

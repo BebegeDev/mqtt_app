@@ -16,18 +16,19 @@ from Connected.connection_db import add_user
 
 def init_start():
     mqttc = connection()
-    command_operator = Command(mqttc)
-    command_operator.callback_data()
+    connect = add_user()
+    operator = Command(mqttc, connect)
+    operator.callback_data()
     while True:
-        connect = add_user()
-        if command_operator.check_connections(connect):
-            asyncio.run(process_data(mqttc, command_operator))
+        if operator.check_connections():
+            print(operator.get_param_em())
+            asyncio.run(process_data(mqttc, operator))
+            break
 
 
-async def process_data(mqttc, command_operator):
+async def process_data(mqttc, operator):
     print("START INIT")
     # подключение к ДБ
-    connect = add_user()
     # Экземпляр класса Util
     data_path = Util()
     # экземпляр класса Publish
@@ -68,16 +69,17 @@ async def process_data(mqttc, command_operator):
         # emulators_callback_two.callback_data(),
         # diesel_callback.callback_data()
     ]
+
     # запуск списка асинхронных задач
     await asyncio.gather(*tasks_callback)
     condition_em = False
     # цикл для обработки событий
     try:
         while True:
-            connect = add_user()
-            if command_operator.check_connections(connect):
+            if operator.check_connections():
                 if not condition_em:
-                    emulators_callback_one.push_command({"on_off": 1})
+                    print("START")
+                    # emulators_callback_one.push_command({"on_off": 1})
                     condition_em = True
                 # опрос виктрона
                 victron.survey_victron()
@@ -92,15 +94,15 @@ async def process_data(mqttc, command_operator):
                 # задержка 1 сек
                 await asyncio.sleep(1)
             else:
-                print("STOP")
                 if condition_em:
-                    emulators_callback_one.push_command({"on_off": 0})
+                    print("STOP")
+                    # emulators_callback_one.push_command({"on_off": 0})
                     condition_em = False
+                    await asyncio.sleep(1)
 
     except KeyboardInterrupt:
         ContactEmulators.close_socket(emulators_contact_one.socket)
         # ContactEmulators.close_socket(emulators_contact_two.socket)
-
         print("Соединение закрыто по инициативе пользователя")
 
 

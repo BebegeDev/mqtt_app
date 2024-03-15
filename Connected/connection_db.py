@@ -21,7 +21,9 @@ def add_user():
             user=user,
             password=password,
             cursorclass=DictCursor,
-            database=BD)
+            database=BD,
+            autocommit=True)
+
         return connect
         # with connect:
         #     cursor = connect.cursor()
