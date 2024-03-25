@@ -16,13 +16,16 @@ from Connected.connection_db import add_user
 
 def init_start():
     mqttc = connection()
-    connect = add_user()
-    operator = Command(mqttc, connect)
+    cursor = add_user()
+    operator = Command(mqttc, cursor)
     operator.callback_data()
     while True:
         if operator.check_connections():
             print(operator.get_param_em())
-            asyncio.run(process_data(mqttc, operator))
+            try:
+                asyncio.run(process_data(mqttc, operator))
+            finally:
+                print("Останов программы")
             break
 
 
@@ -58,44 +61,43 @@ async def process_data(mqttc, operator):
 
     await asyncio.gather(*tasks_callback)
     condition_em = False
-    try:
-        while True:
-            if operator.check_connections():
-                if not condition_em:
-                    print("START")
-                    emulators_callback_one.push_command({
-                        "SYST:INT:SIM:SET VOC_STC,": operator.get_param_em()[1],
-                        "SYST:INT:SIM:SET ISC_STC,": operator.get_param_em()[2],
-                        "SYST:INT:SIM:SET VMPP_STC,": operator.get_param_em()[3],
-                        "SYST:INT:SIM:SET IMPP_STC,": operator.get_param_em()[4],
-                        "SYST:INT:SIM:SET ALPHA,": operator.get_param_em()[5],
-                        "SYST:INT:SIM:SET BETA,": operator.get_param_em()[6]
-                    })
-                    emulators_callback_one.on_off({
-                        "OUTPUT,": 1,
-                    })
-                    condition_em = True
-                victron.survey_victron()
-                victron.publish_topic(topic_victron)
-                emulators_contact_one.get_data_emulators()
-                # emulators_contact_two.get_data_emulators()
-                publish.publish_data_emulators(emulators_contact_one)
-                # publish.publish_data_emulators(emulators_contact_two)
-                await asyncio.sleep(1)
-            else:
-                if condition_em:
-                    print("STOP")
-                    emulators_callback_one.on_off({
-                        "OUTPUT,": 0,
-                    })
-                    condition_em = False
+
+    while True:
+        if operator.check_connections():
+            if not condition_em:
+                print("START")
+                emulators_callback_one.push_command({
+                    "SYST:INT:SIM:SET VOC_STC,": operator.get_param_em()[1],
+                    "SYST:INT:SIM:SET ISC_STC,": operator.get_param_em()[2],
+                    "SYST:INT:SIM:SET VMPP_STC,": operator.get_param_em()[3],
+                    "SYST:INT:SIM:SET IMPP_STC,": operator.get_param_em()[4],
+                    "SYST:INT:SIM:SET ALPHA,": operator.get_param_em()[5],
+                    "SYST:INT:SIM:SET BETA,": operator.get_param_em()[6]
+                })
+                # emulators_callback_one.on_off({
+                #     "OUTPUT,": 1,
+                # })
+                condition_em = True
+            victron.survey_victron()
+            victron.publish_topic(topic_victron)
+            emulators_contact_one.get_data_emulators()
+            # emulators_contact_two.get_data_emulators()
+            publish.publish_data_emulators(emulators_contact_one)
+            # publish.publish_data_emulators(emulators_contact_two)
+        else:
+            if condition_em:
+                print("STOP")
+                # emulators_callback_one.on_off({
+                #     "OUTPUT,": 0,
+                # })
+                condition_em = False
+        try:
             await asyncio.sleep(1)
-
-    except KeyboardInterrupt:
-        ContactEmulators.close_socket(emulators_contact_one.socket)
-        # ContactEmulators.close_socket(emulators_contact_two.socket)
-        print("Соединение закрыто по инициативе пользователя")
-
+        except asyncio.CancelledError:
+            print("Отмена обработки асинхронной операции")
+            ContactEmulators.close_socket(emulators_contact_one.socket)
+            # ContactEmulators.close_socket(emulators_contact_two.socket)
+            break
 
 if __name__ == '__main__':
     init_start()

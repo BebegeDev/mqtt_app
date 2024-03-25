@@ -30,12 +30,14 @@ class Command(InterfaceCallback):
         cursor = self.connect.cursor()
         cursor.execute("SELECT * FROM control_signal WHERE id ='1'")
         start_stop = cursor.fetchone()["start_stop"]
+        cursor.close()
         return start_stop
 
     def get_param_em(self):
         cursor = self.connect.cursor()
         cursor.execute("SELECT * FROM parameters_pv WHERE id ='1'")
         param_em = list(cursor.fetchall()[0].values())
+        cursor.close()
         return param_em
 
 
