@@ -34,8 +34,8 @@ class Command(InterfaceCallback):
 
     def get_param_em(self):
         cursor = self.connect.cursor()
-        cursor.execute("SELECT * FROM parameters_of_pv_modules WHERE id ='1'")
-        param_em = list(cursor.fetchall()[0].values())[:-1]
+        cursor.execute("SELECT * FROM parameters_pv WHERE id ='1'")
+        param_em = list(cursor.fetchall()[0].values())
         return param_em
 
 

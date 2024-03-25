@@ -25,12 +25,6 @@ def add_user():
             autocommit=True)
 
         return connect
-        # with connect:
-        #     cursor = connect.cursor()
-        #     cursor.execute("SELECT * FROM consumption_dgu")
-        #     rows = cursor.fetchall()
-        #     print(cursor)
-        #     return cursor
     except Exception as e:
         print("Подключение не удалось")
         print(e)

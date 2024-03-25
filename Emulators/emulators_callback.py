@@ -25,14 +25,10 @@ class EmCallback(InterfaceCallback):
             self.flag_get_data = True
 
     def push_command(self, msg):
-        key = list(msg.keys())[0]
-        value = list(msg.values())[0]
-        print(key)
-        print(value)
-        dict_command = {
-            'on_off': [self.em_command.on_off, f"OUTPUT {value}"],
-            'set_voltage': [self.em_command.set_point_command, f"SOUR:VOLT {value}"],
-            'set_current': [self.em_command.set_point_command, f"SOUR:CUR {value}"]
-        }
-        func, command = dict_command[key]
-        func(command)
+        self.em_command.set_prog_source_v("eth")
+        self.em_command.set_prog_source_i("eth")
+        for key, value in msg.items():
+            command = f"{key}{value}"
+            self.em_command.send_command(command)
+        self.em_command.set_prog_source_v("slot4")
+        self.em_command.set_prog_source_i("slot4")
