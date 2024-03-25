@@ -24,6 +24,11 @@ class EmCallback(InterfaceCallback):
         if data:
             self.flag_get_data = True
 
+    def on_off(self, msg):
+        for key, value in msg.items():
+            command = f"{key} {value}"
+            self.em_command.send_command(command)
+
     def push_command(self, msg):
         self.em_command.set_prog_source_v("eth")
         self.em_command.set_prog_source_i("eth")
