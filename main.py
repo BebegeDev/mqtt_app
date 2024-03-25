@@ -58,21 +58,20 @@ async def process_data(mqttc, operator):
 
     await asyncio.gather(*tasks_callback)
     condition_em = False
-
+    emulators_callback_one.push_command({
+        # "on_off": 1,
+        "SYST:INT:SIM:SET VOC_STC,": operator.get_param_em()[1],
+        "SYST:INT:SIM:SET ISC_STC,": operator.get_param_em()[2],
+        "SYST:INT:SIM:SET VMPP_STC,": operator.get_param_em()[3],
+        "SYST:INT:SIM:SET IMPP_STC,": operator.get_param_em()[4],
+        "SYST:INT:SIM:SET ALPHA,": operator.get_param_em()[5],
+        "SYST:INT:SIM:SET BETA,": operator.get_param_em()[6]
+    })
     try:
         while True:
             if operator.check_connections():
                 if not condition_em:
                     print("START")
-                    emulators_callback_one.push_command({
-                        # "on_off": 1,
-                        "SYST:INT:SIM:SET VOC_STC,": operator.get_param_em()[1],
-                        "SYST:INT:SIM:SET ISC_STC,": operator.get_param_em()[2],
-                        "SYST:INT:SIM:SET VMPP_STC,": operator.get_param_em()[3],
-                        "SYST:INT:SIM:SET IMPP_STC,": operator.get_param_em()[4],
-                        "SYST:INT:SIM:SET ALPHA,": operator.get_param_em()[5],
-                        "SYST:INT:SIM:SET BETA,": operator.get_param_em()[6]
-                    })
                     condition_em = True
                 victron.survey_victron()
                 victron.publish_topic(topic_victron)
