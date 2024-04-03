@@ -6,7 +6,6 @@ class Publish:
     def __init__(self, mqttc):
         self.mqttc = mqttc
 
-
     def publish_data_emulators(self, emulator):
         if emulator.sockets_flag:
             try:
@@ -25,3 +24,11 @@ class Publish:
                                payload=json.dumps({"value": 0}))
             self.mqttc.publish(f'mpei/Emulator_{emulator.socket.getpeername()}/Power',
                                payload=json.dumps({"value": 0}))
+
+
+    def push_name_socket(self, em, name):
+
+        """НУЖНО ВЫНЕСТИ В БД!!!!!!!!!!!!!!!!!!!!!!"""
+
+        msg = em.socket.getpeername()
+        self.mqttc.publish(f"mpei/info/{name}", f"{msg}")

@@ -1,21 +1,19 @@
 
-from Interface.interface import InterfaceCallback
+import time
+import pymodbus
 from pymodbus.client.serial import ModbusSerialClient
+from pymodbus.exceptions import ModbusException
+from pymodbus.pdu import ExceptionResponse
+import pandas as pd
+import numpy as np
+import csv
+import serial
 
 
-class Contact(InterfaceCallback):
-
+class DieselContact:
 
     def __init__(self):
-        self.client = ModbusSerialClient(method='rtu', port="/dev/ttyUSB0", baudrate=19200,
+        self.client = ModbusSerialClient(method='rtu', port='COM4', baudrate=19200,
                                          bytesize=8, parity='N', stopbits=1)
         self.client.connect()
 
-    async def callback_data(self, topic):
-        pass
-
-    def get_data(self, client, userdata, data):
-        pass
-
-    def validate_data(self, data):
-        pass

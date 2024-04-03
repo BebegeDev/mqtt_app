@@ -1,29 +1,27 @@
 class CommandEmulators:
 
-    def __init__(self, em):
-        self.em = em
+    def __init__(self, socket):
+        self.socket = socket
+        self.validSrcList = ["front", "web", "seq", "eth", "slot1", "slot2", "slot3", "slot4", "loc", "rem"]
 
-    def on_off(self, command):
-        print(f"Calling on_off with command: {command}")
-        self.em.send_command(command)
+    def send_command(self, msg):
+        print(f"Calling command: {msg}")
+        msg = msg + "\n"
+        self.socket.sendall(msg.encode("UTF-8"))
 
-    def set_point_command(self, command):
-        print(f"Calling set_point_command with command: {command}")
+    def set_prog_source_v(self, src):
         retval = 0
-        self.em.set_prog_source_i('eth')
-        self.em.set_prog_source_v('eth')
-        if command:
-            self.em.send_command(command)
+        if src in self.validSrcList:
+            self.send_command("SYST:REM:CV {0}".format(src))
+
         else:
-            print("ERROR")
             retval = -1
         return retval
 
-    def test2(self, command):
-        print(f"Calling test2 with command: {command}")
-        print(command)
-
-
-
-
-
+    def set_prog_source_i(self, src):
+        retval = 0
+        if src.lower() in self.validSrcList:
+            self.send_command("SYST:REM:CC {0}".format(src))
+        else:
+            retval = -1
+        return retval

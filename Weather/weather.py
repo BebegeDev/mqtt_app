@@ -12,8 +12,6 @@ class WeatherForecast:
         self.set_param()
         self.name_file = Util()
 
-
-
     def set_param(self, station='1', var_station='mpei', var_nwp_provider='icon'):
         self.__headers = {
             'accept': 'application/json',
@@ -36,7 +34,7 @@ class WeatherForecast:
                 print(200)
                 json_data = response.json()
                 data = self.__get_data()
-                self.name_file.create_json("weather.json", json_data[data:24+data])
+                self.name_file.create_json("weather.json", json_data[data:24 + data])
             except ValueError:
                 print("Сервер вернул некорректный JSON")
         else:
@@ -45,8 +43,7 @@ class WeatherForecast:
     @staticmethod
     def __get_data():
         return int(datetime.now().strftime("%H"))
-        
-        
+
     @staticmethod
     def get_param_weather(hour=1, *param):
         data_json = Util().open_json("weather.json")
