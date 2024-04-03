@@ -40,4 +40,11 @@ class Command(InterfaceCallback):
         cursor.close()
         return param_em
 
+    def get_available_dgu(self):
+        cursor = self.connect.cursor()
+        cursor.execute("SELECT * FROM control_dgu")
+        excluded_engines = cursor.fetchall()[0]
+        print(list(excluded_engines.values())[2:])
+
+        return excluded_engines
 
