@@ -1,4 +1,6 @@
 import json
+import time
+
 from Interface.interface import InterfaceCallback
 
 
@@ -48,17 +50,39 @@ class DieselCallbackMQTT(InterfaceCallback):
 class DieselCallbackBD:
 
     def __init__(self, diesel):
+        self.flag = True
         self.diesel = diesel
 
     def checking_work_status(self, address=3, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
-        print("Статус работы:", status)
+        print("Статус работы:", status[0])
 
     def ready_auto_launch(self, address=31, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
-        print("Готовность к авто-запуску:", status)
+        print("Готовность к авто-запуску:", status[0])
 
-    def on_off(self, available_dgu, slave, address=0, value=True):
+    def on_off(self, available_dgu, slave, value=True):
         if available_dgu:
-            status = self.diesel.command_write_coil(address, value, slave)
-            print(f"Отправлена команда на включение slave {slave}", status)
+            address = 0
+        else:
+            address = 3
+        self.diesel.command_write_coil(address, value, slave)
+        print(f"Отправлена команда на slave {slave} address {address}")
+
+    def command_processing_diesel(self, status, available_dgu):
+        if status:
+
+            if self.flag:
+                print("Включение ДГУ №2")
+                self.on_off(available_dgu, slave=2)
+                self.flag = False
+                time.sleep(10)
+                self.diesel.command_write_coil(24, True, 2)
+        else:
+
+            if not self.flag:
+                self.diesel.command_write_coil(25, True, 2)
+                print("Останов ДГУ №2")
+                self.on_off(available_dgu, slave=2)
+                self.flag = True
+

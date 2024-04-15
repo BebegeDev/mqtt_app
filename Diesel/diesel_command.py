@@ -16,9 +16,7 @@ class DieselCommand:
         return data.bits
 
     def command_write_coil(self, address, value, slave):
-        data = self.client.write_coil(address=address, value=value, slave=slave)
-        print(data.registers)
-        # return int(float(''.join(map(str, data.registers))))
+        self.client.write_coil(address=address, value=value, slave=slave)
 
     def command_write_registers(self, address, count, slave):
         data = self.client.write_registers(address=address, count=count, slave=slave)
