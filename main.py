@@ -28,7 +28,6 @@ def init_start():
                 print("Останов программы")
             break
 
-
 async def process_data(mqttc, operator):
     print("START INIT")
     data_path = Util()
@@ -73,9 +72,9 @@ async def process_data(mqttc, operator):
         if operator.check_connections("start_stop_all"):
             emulators_callback_one.command_processing_em(operator.check_connections("start_stop_em"),
                                                          "OUTPUT,", 1)
-            # emulators_callback_one.command_processing_em(True,
-            #                                              "SYST:INT:SIM"
-            #                                              ":SET TSTC,", operator.get_param_em(tables="simulator_1")[3])
+            emulators_callback_one.command_processing_em(True,
+                                                         "SYST:INT:SIM"
+                                                         ":SET TSTC,", operator.get_param_em(tables="simulator_1")[3])
             # emulators_callback_one.command_processing_em(True,
             #                                              "SYST:INT:SIM"
             #                                              ":SET GSTC,", operator.get_param_em(tables="simulator_1")[2])

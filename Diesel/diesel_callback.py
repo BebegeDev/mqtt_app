@@ -52,14 +52,15 @@ class DieselCallbackBD:
     def __init__(self, diesel):
         self.flag = True
         self.diesel = diesel
+        self.old_command = 0
 
     def checking_work_status(self, address=3, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
-        print("Статус работы:", status[0])
+        # print("Статус работы:", status[0])
 
     def ready_auto_launch(self, address=31, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
-        print("Готовность к авто-запуску:", status[0])
+        # print("Готовность к авто-запуску:", status[0])
 
     def on_off(self, available_dgu, slave, value=True):
         if available_dgu:
@@ -69,20 +70,19 @@ class DieselCallbackBD:
         self.diesel.command_write_coil(address, value, slave)
         print(f"Отправлена команда на slave {slave} address {address}")
 
-    def command_processing_diesel(self, status, available_dgu):
-        if status:
-
-            if self.flag:
+    def command_processing_diesel(self, start_stop_diesel, available_dgu):
+        if start_stop_diesel:
+            if self.old_command != start_stop_diesel:
                 print("Включение ДГУ №2")
                 self.on_off(available_dgu, slave=2)
-                self.flag = False
-                time.sleep(10)
-                self.diesel.command_write_coil(24, True, 2)
-        else:
+                self.old_command = start_stop_diesel
+                print(f"self.old_command", self.old_command)
 
-            if not self.flag:
-                self.diesel.command_write_coil(25, True, 2)
+        else:
+            if self.old_command != start_stop_diesel:
                 print("Останов ДГУ №2")
-                self.on_off(available_dgu, slave=2)
-                self.flag = True
+                self.on_off(0, slave=2)
+                self.old_command = start_stop_diesel
+                print(f"self.old_command", self.old_command)
+
 
