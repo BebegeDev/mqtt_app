@@ -8,16 +8,16 @@ def add_user():
     # Получаем данные пользователя из функции
     config = configparser.ConfigParser()
     config.read("utils/setting.ini")
-    host = config['BD']['HOST']
-    user = config['BD']['USER']
-    password = config['BD']['PASSWORD']
-    BD = config['BD']['BD_NAME']
+    # host = config['BD']['HOST']
+    # user = config['BD']['USER']
+    # password = config['BD']['PASSWORD']
+    # BD = config['BD']['BD_NAME']
     try:
         connect = pymysql.connect(
             host='10.2.173.169',
             port=3306,
             user='user1',
-            password=password,
+            password="123",
             cursorclass=DictCursor,
             database='test',
             autocommit=True)

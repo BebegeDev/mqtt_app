@@ -1,5 +1,6 @@
 import json
 import time
+from datetime import datetime
 
 from Interface.interface import InterfaceCallback
 
@@ -53,6 +54,7 @@ class DieselCallbackBD:
         self.flag = True
         self.diesel = diesel
         self.old_command = 0
+        self.old_list_command = []
 
     def checking_work_status(self, address=3, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
@@ -62,27 +64,19 @@ class DieselCallbackBD:
         status = self.diesel.get_data_bool(address, count, slave)
         # print("Готовность к авто-запуску:", status[0])
 
+    def get_power_current(self):
+        return self.diesel.command_read_input_registers(address=519, count=1, slave=2)
+
     def on_off(self, available_dgu, slave, value=True):
         if available_dgu:
             address = 0
         else:
             address = 3
         self.diesel.command_write_coil(address, value, slave)
-        print(f"Отправлена команда на slave {slave} address {address}")
+        print(f"Отправлена команда на slave {slave} address {address} {datetime.now()}")
 
-    def command_processing_diesel(self, start_stop_diesel, available_dgu):
-        if start_stop_diesel:
-            if self.old_command != start_stop_diesel:
-                print("Включение ДГУ №2")
-                self.on_off(available_dgu, slave=2)
-                self.old_command = start_stop_diesel
-                print(f"self.old_command", self.old_command)
-
-        else:
-            if self.old_command != start_stop_diesel:
-                print("Останов ДГУ №2")
-                self.on_off(0, slave=2)
-                self.old_command = start_stop_diesel
-                print(f"self.old_command", self.old_command)
-
-
+    def command_processing_diesel(self, available_dgu):
+        for dgu in available_dgu:
+            if dgu not in self.old_list_command:
+                self.on_off(dgu['control_dgu'], slave=dgu['slave'])
+        self.old_list_command = available_dgu

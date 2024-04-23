@@ -13,23 +13,31 @@ def init_start():
     diesel_contact = DieselContact()
     diesel_command = DieselCommand(diesel_contact.client)
     diesel_callback = DieselCallbackBD(diesel_command)
+    flag_start_stop_all = False
     while True:
-        if operator.check_connections("start_stop_all"):
-
-            while diesel_contact.client.connect():
+        while operator.check_connections("start_stop_all"):
+            if operator.check_connections("start_stop_diesel"):
                 diesel_callback.checking_work_status(slave=2)
                 # diesel_callback.checking_work_status(slave=3)
                 diesel_callback.ready_auto_launch()
-                available_dgu = operator.get_available_dgu()
-                diesel_callback.command_processing_diesel(operator.check_connections("start_stop_diesel"), available_dgu[0])
-
+                diesel_callback.command_processing_diesel(operator.get_excluded_engines())
                 diesel_callback.checking_work_status(slave=2)
                 # diesel_callback.checking_work_status(slave=3)
+                operator.update_current_power(diesel_callback.get_power_current())
+            else:
+                operator.update_excluded_engines(operator.get_excluded_engines(), 0)
+                diesel_callback.command_processing_diesel(operator.get_excluded_engines())
+            flag_start_stop_all = True
 
         else:
-            diesel_callback.command_processing_diesel(operator.check_connections("start_stop_all"), 0)
-            diesel_callback.checking_work_status(slave=2)
-            # diesel_callback.checking_work_status(slave=3)
+            if flag_start_stop_all:
+                operator.update_excluded_engines(operator.get_excluded_engines(), 0)
+                operator.update_control_signal('start_stop_diesel', 0)
+                diesel_callback.command_processing_diesel(operator.get_excluded_engines())
+                diesel_callback.checking_work_status(slave=2)
+                operator.update_current_power(diesel_callback.get_power_current())
+                # diesel_callback.checking_work_status(slave=3)
+                flag_start_stop_all = False
 
 
 if __name__ == '__main__':

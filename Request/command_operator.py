@@ -46,5 +46,30 @@ class Command(InterfaceCallback):
         excluded_engines = list(cursor.fetchall()[0].values())[2:]
         return excluded_engines
 
+    def update_current_power(self, power):
+        cursor = self.connect.cursor()
+        cursor.execute(f"UPDATE current_power SET current_power = {power} WHERE id = 1")
+        cursor.close()
+
+    def get_excluded_engines(self):
+        cursor = self.connect.cursor()
+        cursor.execute("SELECT * FROM control_dgu_new")
+        excluded_engines = cursor.fetchall()
+        cursor.close()
+        return excluded_engines
+
+    def update_excluded_engines(self, available_dgu, status):
+        cursor = self.connect.cursor()
+        for dgu in available_dgu:
+            cursor.execute(f"UPDATE control_dgu_new SET control_dgu = {status} WHERE slave = {dgu['slave']}")
+        cursor.close()
+
+    def update_control_signal(self, column, status):
+        cursor = self.connect.cursor()
+        cursor.execute(f"UPDATE control_signal SET {column} = {status} WHERE id = 1")
+        cursor.close()
+
+
+
 
 
