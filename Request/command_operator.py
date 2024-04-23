@@ -26,6 +26,7 @@ class Command(InterfaceCallback):
     def validate_data(self, data):
         pass
 
+
     def check_connections(self, column):
         cursor = self.connect.cursor()
         cursor.execute("SELECT * FROM control_signal WHERE id ='1'")
@@ -36,6 +37,7 @@ class Command(InterfaceCallback):
     def get_param_em(self, tables):
         cursor = self.connect.cursor()
         cursor.execute(f"SELECT * FROM {tables} WHERE id ='1'")
+
         param_em = list(cursor.fetchall()[0].values())
         cursor.close()
         return param_em
@@ -68,8 +70,6 @@ class Command(InterfaceCallback):
         cursor = self.connect.cursor()
         cursor.execute(f"UPDATE control_signal SET {column} = {status} WHERE id = 1")
         cursor.close()
-
-
 
 
 

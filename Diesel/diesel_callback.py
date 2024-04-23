@@ -1,6 +1,8 @@
 import json
+
 import time
 from datetime import datetime
+
 
 from Interface.interface import InterfaceCallback
 
@@ -51,6 +53,7 @@ class DieselCallbackMQTT(InterfaceCallback):
 class DieselCallbackBD:
 
     def __init__(self, diesel):
+
         self.flag = True
         self.diesel = diesel
         self.old_command = 0
@@ -80,3 +83,4 @@ class DieselCallbackBD:
             if dgu not in self.old_list_command:
                 self.on_off(dgu['control_dgu'], slave=dgu['slave'])
         self.old_list_command = available_dgu
+

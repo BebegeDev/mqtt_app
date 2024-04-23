@@ -28,6 +28,7 @@ class ContactEmulators:
             supply_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             supply_socket.connect((ip, port))
             # supply_socket.settimeout(timeout_seconds)
+
             print(f"Успешное подключение к {data_socket}")
             print(f"------------------------------------------------------------------")
             self.sockets_flag = True

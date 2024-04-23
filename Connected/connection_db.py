@@ -4,10 +4,13 @@ import pymysql
 from pymysql.cursors import DictCursor
 
 
+
+
 def add_user():
     # Получаем данные пользователя из функции
     config = configparser.ConfigParser()
     config.read("utils/setting.ini")
+
     # host = config['BD']['HOST']
     # user = config['BD']['USER']
     # password = config['BD']['PASSWORD']
@@ -20,6 +23,7 @@ def add_user():
             password="123",
             cursorclass=DictCursor,
             database='test',
+
             autocommit=True)
 
         return connect

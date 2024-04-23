@@ -5,12 +5,14 @@ class CommandEmulators:
         self.validSrcList = ["front", "web", "seq", "eth", "slot1", "slot2", "slot3", "slot4", "loc", "rem"]
 
     def send_command(self, msg):
+
         try:
             print(f"Calling command: {msg}")
             msg = msg + "\n"
             self.socket.sendall(msg.encode("UTF-8"))
         except Exception as e:
             print(e)
+
 
     def set_prog_source_v(self, src):
         retval = 0
