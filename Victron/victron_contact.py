@@ -32,7 +32,9 @@ class VictronCommand(InterfaceCallback):
         except json.JSONDecodeError as e:
             print("Error: ", e)
 
-    async def callback_data_all(self, log_victron, topic="N/d436391ea13a/#"):
+
+    def callback_data_all(self, log_victron, topic="N/d436391ea13a/#"):
+
         self.log_victron = log_victron
         self.mqttc.message_callback_add(topic, self.get_data_all)
 
@@ -45,10 +47,12 @@ class VictronCommand(InterfaceCallback):
             else:
                 print("Получена пустая полезная нагрузка:", data.topic)
 
+
+
         except json.JSONDecodeError as e:
             print("Error: ", e, data.topic)
 
-    async def callback_data(self, topic):
+    def callback_data(self, topic):
         for key, item in topic.items():
             self.mqttc.message_callback_add(item, self.get_data)
 

@@ -11,7 +11,15 @@ class EmCallback(InterfaceCallback):
         self.mqttc = mqttc
         self.em_command = em_command
 
-    async def callback_data(self, topic="mpei/command_operator/em"):
+        self.flag = True
+        self.old_command = {
+            "OUTPUT, ": None,
+            "SYST:INT:SIM:SET TPV,": None,
+            "SYST:INT:SIM:SET GPV,": None
+        }
+
+    def callback_data(self, topic="mpei/command_operator/em"):
+
         self.mqttc.message_callback_add(topic, self.get_data)
 
     def get_data(self, client, userdata, data):
@@ -24,9 +32,12 @@ class EmCallback(InterfaceCallback):
         if data:
             self.flag_get_data = True
 
-    def on_off(self, msg):
+
+    def command_out(self, msg):
+
         for key, value in msg.items():
-            command = f"{key} {value}"
+            command = f"{key}{value}"
+
             self.em_command.send_command(command)
 
     def push_command(self, msg):
@@ -37,3 +48,25 @@ class EmCallback(InterfaceCallback):
             self.em_command.send_command(command)
         self.em_command.set_prog_source_v("slot4")
         self.em_command.set_prog_source_i("slot4")
+
+
+    def command_processing_em(self, start_stop_em, command, value):
+        if start_stop_em:
+            if self.old_command[command] != value:
+                self.command_out({
+                    command: value,
+                })
+                self.old_command[command] = value
+                print(command, value)
+                print(self.old_command)
+
+        else:
+            if self.old_command[command] != value:
+                self.command_out({
+                    command: value,
+                })
+                self.old_command[command] = value
+                print(command, value)
+                print(self.old_command)
+
+

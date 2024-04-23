@@ -1,4 +1,9 @@
 import json
+
+import time
+from datetime import datetime
+
+
 from Interface.interface import InterfaceCallback
 
 
@@ -48,17 +53,34 @@ class DieselCallbackMQTT(InterfaceCallback):
 class DieselCallbackBD:
 
     def __init__(self, diesel):
+
+        self.flag = True
         self.diesel = diesel
+        self.old_command = 0
+        self.old_list_command = []
 
     def checking_work_status(self, address=3, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
-        print("Статус работы:", status)
+        # print("Статус работы:", status[0])
 
     def ready_auto_launch(self, address=31, count=1, slave=2):
         status = self.diesel.get_data_bool(address, count, slave)
-        print("Готовность к авто-запуску:", status)
+        # print("Готовность к авто-запуску:", status[0])
 
-    def on_off(self, available_dgu, slave, address=0, value=True):
+    def get_power_current(self):
+        return self.diesel.command_read_input_registers(address=519, count=1, slave=2)
+
+    def on_off(self, available_dgu, slave, value=True):
         if available_dgu:
-            status = self.diesel.command_write_coil(address, value, slave)
-            print(f"Отправлена команда на включение slave {slave}", status)
+            address = 0
+        else:
+            address = 3
+        self.diesel.command_write_coil(address, value, slave)
+        print(f"Отправлена команда на slave {slave} address {address} {datetime.now()}")
+
+    def command_processing_diesel(self, available_dgu):
+        for dgu in available_dgu:
+            if dgu not in self.old_list_command:
+                self.on_off(dgu['control_dgu'], slave=dgu['slave'])
+        self.old_list_command = available_dgu
+
